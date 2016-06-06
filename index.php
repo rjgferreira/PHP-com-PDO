@@ -1,3 +1,16 @@
+<?php
+$rota = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+$path = urldecode(substr($rota['path'], 1));
+$s = str_split(strstr($path, '/'));
+if(count($s) == 1 && empty($s[0])){
+    // Não tenho parâmetro
+}else{
+    $id = (int)implode(array_splice($s,1));
+    if(is_int($id) && $id > 0) {
+        $path = substr($path, 0, strpos($path,"/"));
+    }
+}
+?>
 <!doctype html>
 <html>
 <head>
@@ -21,38 +34,17 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li <?php if((isset($_GET['actn'])&&$_GET['actn']=='listar')||!isset($_GET['actn'])) echo 'class="active"' ?>><a href="?actn=listar"">Listar alunos</a></li>
-                <li <?php if(isset($_GET['actn'])&&$_GET['actn']=='top3') echo 'class="active"' ?>><a href="?actn=top3">Top 3 Notas</a></li>
+                <li <?php if($path=='listar' || $path == '') echo 'class="active"' ?>><a href="/listar"">Listar alunos</a></li>
+                <li <?php if($path=='top3') echo 'class="active"' ?>><a href="/top3">Top 3 Notas</a></li>
+                <li <?php if($path=='cadastrar') echo 'class="active"' ?>><a href="/cadastrar">Cadastrar</a></li>
+                <?php if($path=='alterar') echo '<li class="active"><a href="#">Alterar</a></li>' ?>
+                <?php if($path=='excluir') echo '<li class="active"><a href="#">Excluir</a></li>' ?>
+                <?php if($path=='visualizar') echo '<li class="active"><a href="#">Visualizar</a></li>' ?>
             </ul>
         </div>
     </nav>
     <div class="jumbotron">
-        <h1><?php if((isset($_GET['actn'])&&$_GET['actn']=='listar')||!isset($_GET['actn'])) echo 'Listagem de alunos'; else echo 'Top 3 notas'; ?></h1>
-        <p class="lead"><?php if((isset($_GET['actn'])&&$_GET['actn']=='listar')||!isset($_GET['actn'])) echo 'Lista completa dos alunos e suas respectivas notas.'; else echo 'Lista dos 3 primeiros alunos da classe.'; ?></p>
-        <table class="table">
-            <thead>
-            <th width="5%">ID</th><th>Nome</th><th>Nota</th>
-            </thead>
-            <?php
-            try {
-                $conn = new \PDO("mysql:host=localhost;dbname=pdo", "root", "", array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
-                if(isset($_GET['actn']))
-                    if($_GET['actn']=='top3')
-                        $query = "SELECT * FROM alunos ORDER BY nota DESC LIMIT 3";
-                    else
-                        $query = "SELECT * FROM alunos";
-                else
-                    $query = "SELECT * FROM alunos";
-                $sttmt = $conn->query($query);
-                $res = $sttmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach($res as $alunos){
-                    echo "<tr><td>".$alunos['id']."</td><td>"."".$alunos['nome']."</td><td>".$alunos['nota']."</td></tr>";
-                }
-            }catch (PDOException $e){
-                echo '<pre>Erro código '.$e->getCode().'.</pre> Enviando mensagem de alerta ao webmaster...';
-            }
-            ?>
-        </table>
+        <?php require($path.".php"); ?>
     </div>
     <footer class="footer">
         <p>Todos os direitos resevados - <?php echo date('Y'); ?></p>
