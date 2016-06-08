@@ -12,13 +12,10 @@
         <th>&nbsp;</th>
         </thead>
         <?php
-        require("Alunos.php");
-        try {
-            $cnx = new \PDO("mysql:host=localhost;dbname=pdo", "root", "", array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
-        }catch (PDOException $e){
-            echo '<pre>Erro código '.$e->getCode().'.</pre> Enviando mensagem de alerta ao webmaster...';
-        }
-        $aluno = new Alunos($cnx);
+        require_once("Alunos.php");
+        require_once("dbconfig.php");
+        $conn = dbCnct();
+        $aluno = new Alunos($conn);
         if(isset($_POST['nome']) && isset($_POST['nota'])) {
             $aluno->setId($id)
                 ->setNome($_POST['nome'])

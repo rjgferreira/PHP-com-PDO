@@ -4,6 +4,8 @@ $path = urldecode(substr($rota['path'], 1));
 $s = str_split(strstr($path, '/'));
 if(count($s) == 1 && empty($s[0])){
     // Não tenho parâmetro
+    if($path=='')
+        $path = 'listar';
 }else{
     $id = (int)implode(array_splice($s,1));
     if(is_int($id) && $id > 0) {

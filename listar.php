@@ -14,7 +14,8 @@
     </thead>
     <?php
     try {
-        $conn = new \PDO("mysql:host=localhost;dbname=pdo", "root", "", array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+        require_once("dbconfig.php");
+        $conn = dbCnct();
         $query = "SELECT * FROM alunos";
         $sttmt = $conn->query($query);
         $res = $sttmt->fetchAll(PDO::FETCH_ASSOC);
