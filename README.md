@@ -1,3 +1,6 @@
+Correção do projeto:
+	- Concentrar a conexão com o banco em um só lugar, facilitando a manutenção do código (release 0.1.2).
+
 PHP com PDO (projeto fase 2)
 	- Criar o CRUD do sistema;
 		- Listar todos alunos
